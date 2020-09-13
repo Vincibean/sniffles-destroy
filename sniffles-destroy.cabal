@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: cf9a8accb830681f2c6adeec23e97b56a8d3ee74c0b597adb18df14b948ea78a
+-- hash: 64403d865a0c98ff6ecdfcd4bc084173a1e98ccd7d3847669a807364d2b02d3f
 
 name:           sniffles-destroy
 version:        0.1.0.0
@@ -34,6 +34,8 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , bytestring
+    , cmdargs
     , connection
     , http-client-tls
     , lens
@@ -51,6 +53,8 @@ executable sniffles-destroy-exe
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , bytestring
+    , cmdargs
     , connection
     , http-client-tls
     , lens
@@ -70,6 +74,8 @@ test-suite sniffles-destroy-test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
+    , bytestring
+    , cmdargs
     , connection
     , http-client-tls
     , lens
