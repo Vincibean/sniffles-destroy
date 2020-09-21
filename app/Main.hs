@@ -71,15 +71,16 @@ main = do
         &  auth
         ?~ basicAuth usr psw
         &  header "Cookie"
-        .~ [ "datadome=KuVut3_YUoTXhjwlLAdY-qzbJiCVSAYU_8WFZvh.-GqirjO1j9JfyYbeQyJNHI67khneJA.SFNWSjGo-CrPfcFd_pYsDYAABEs_Z.Q6D1~; JSESSIONID.3e635b8a=node019k076kwryxhrjoda44r8h1d12914439.node0"
+        .~ [ "datadome=KuVut3_YUoTXhjwlLAdY-qzbJiCVSAYU_8WFZvh.-GqirjO1j9JfyYbeQyJNHI67khneJA.SFNWSjGo-CrPfcFd_pYsDYAABEs_Z.Q6D1~; JSESSIONID.3e635b8a=node012lyzma8q05571j9k2pv48ri9113977159.node0"
            ]
   r <- getWith opts "https://jenkins.otrl.io/crumbIssuer/api/json"
   let crumb = r ^. responseBody . key "crumb" . _String
   r' <- postWith
     opts
-    "https://jenkins.otrl.io/job/sniffles-destroy/buildWithParameters"
+    "https://jenkins.otrl.io/job/sniffles-destroy/build"
     [ "name" := T.pack "BUILD_NAME"
     , "value" := T.pack box
     , "Jenkins-Crumb" := crumb
+    , "json" := T.pack ( "{'parameter':{'name':'BUILD_NAME','value':'" <> box <> "'},'statusCode':'303','redirectTo':'.','Jenkins-Crumb':'" <> T.unpack crumb <> "'}" )
     ]
   print r'
