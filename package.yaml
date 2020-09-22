@@ -25,6 +25,7 @@ dependencies:
 - bytestring
 - wreq
 - cmdargs
+- http-client
 - http-client-tls
 - connection
 - lens

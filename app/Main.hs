@@ -26,6 +26,7 @@ import           Network.Wreq                   ( basicAuth
                                                 , responseBody
                                                 , FormParam((:=))
                                                 )
+import qualified Network.Wreq.Session          as S
 import           Control.Lens                   ( (&)
                                                 , (^.)
                                                 , (.~)
@@ -34,10 +35,13 @@ import           Control.Lens                   ( (&)
 import           Data.Aeson.Lens                ( key
                                                 , AsPrimitive(_String)
                                                 )
-import           Network.HTTP.Client.TLS        ( mkManagerSettings )
+import           Network.HTTP.Client.TLS        ( mkManagerSettings
+                                                , tlsManagerSettings
+                                                )
 import           Network.Connection             ( TLSSettings(..) )
 import           Data.Text                      ( Text )
 import qualified Data.Text                     as T
+import qualified Network.HTTP.Client           as HTTP
 
 data Jenkins = Jenkins { username :: String, password :: String , sidbox :: String } deriving (Data,Typeable,Show,Eq)
 
@@ -60,27 +64,34 @@ jenkins =
 main :: IO ()
 main = do
   params <- cmdArgs jenkins
+  sess   <- S.newSessionControl
+    (Just (HTTP.createCookieJar []))
+    (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
   let usr = B.pack $ username params
   let psw = B.pack $ password params
   let box = sidbox params
-  let
-    opts =
-      defaults
-        &  manager
-        .~ Left (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
-        &  auth
-        ?~ basicAuth usr psw
-        &  header "Cookie"
-        .~ [ "JSESSIONID.3e635b8a=node0g17pfs57oji81ascaiwmldoac14087129.node0"
-           ]
-  r <- getWith opts "https://jenkins.otrl.io/crumbIssuer/api/json"
+  let opts =
+        defaults
+          &  manager
+          .~ Left
+               (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
+          &  auth
+          ?~ basicAuth usr psw
+  r <- S.getWith opts sess "https://jenkins.otrl.io/crumbIssuer/api/json"
   let crumb = r ^. responseBody . key "crumb" . _String
-  r' <- postWith
+  r' <- S.postWith
     opts
+    sess
     "https://jenkins.otrl.io/job/sniffles-destroy/build"
     [ "name" := T.pack "BUILD_NAME"
     , "value" := T.pack box
     , "Jenkins-Crumb" := crumb
-    , "json" := T.pack ( "{'parameter':{'name':'BUILD_NAME','value':'" <> box <> "'},'statusCode':'303','redirectTo':'.','Jenkins-Crumb':'" <> T.unpack crumb <> "'}" )
+    , "json" := T.pack
+      (  "{'parameter':{'name':'BUILD_NAME','value':'"
+      <> box
+      <> "'},'statusCode':'303','redirectTo':'.','Jenkins-Crumb':'"
+      <> T.unpack crumb
+      <> "'}"
+      )
     ]
   print r'

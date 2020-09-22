@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 64403d865a0c98ff6ecdfcd4bc084173a1e98ccd7d3847669a807364d2b02d3f
+-- hash: 7b41f695651bf7ae256733bf8cc83a387b56f37eabec49387b551214f0a94297
 
 name:           sniffles-destroy
 version:        0.1.0.0
@@ -37,6 +37,7 @@ library
     , bytestring
     , cmdargs
     , connection
+    , http-client
     , http-client-tls
     , lens
     , lens-aeson
@@ -56,6 +57,7 @@ executable sniffles-destroy-exe
     , bytestring
     , cmdargs
     , connection
+    , http-client
     , http-client-tls
     , lens
     , lens-aeson
@@ -77,6 +79,7 @@ test-suite sniffles-destroy-test
     , bytestring
     , cmdargs
     , connection
+    , http-client
     , http-client-tls
     , lens
     , lens-aeson
