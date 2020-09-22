@@ -71,7 +71,7 @@ main = do
         &  auth
         ?~ basicAuth usr psw
         &  header "Cookie"
-        .~ [ "datadome=KuVut3_YUoTXhjwlLAdY-qzbJiCVSAYU_8WFZvh.-GqirjO1j9JfyYbeQyJNHI67khneJA.SFNWSjGo-CrPfcFd_pYsDYAABEs_Z.Q6D1~; JSESSIONID.3e635b8a=node012lyzma8q05571j9k2pv48ri9113977159.node0"
+        .~ [ "JSESSIONID.3e635b8a=node0g17pfs57oji81ascaiwmldoac14087129.node0"
            ]
   r <- getWith opts "https://jenkins.otrl.io/crumbIssuer/api/json"
   let crumb = r ^. responseBody . key "crumb" . _String
