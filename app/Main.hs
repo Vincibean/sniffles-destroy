@@ -67,16 +67,10 @@ main = do
   sess   <- S.newSessionControl
     (Just (HTTP.createCookieJar []))
     (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
-  let usr = B.pack $ username params
-  let psw = B.pack $ password params
-  let box = sidbox params
-  let opts =
-        defaults
-          &  manager
-          .~ Left
-               (mkManagerSettings (TLSSettingsSimple True False False) Nothing)
-          &  auth
-          ?~ basicAuth usr psw
+  let usr  = B.pack $ username params
+  let psw  = B.pack $ password params
+  let box  = sidbox params
+  let opts = defaults & auth ?~ basicAuth usr psw
   r <- S.getWith opts sess "https://jenkins.otrl.io/crumbIssuer/api/json"
   let crumb = r ^. responseBody . key "crumb" . _String
   r' <- S.postWith
