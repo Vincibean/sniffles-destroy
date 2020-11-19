@@ -8,7 +8,6 @@ copyright:           "2020 Author name here"
 
 extra-source-files:
 - README.md
-- ChangeLog.md
 
 # Metadata used when publishing your package
 # synopsis:            Short description of your package
@@ -31,9 +30,6 @@ dependencies:
 - lens
 - lens-aeson
 
-library:
-  source-dirs: src
-
 executables:
   sniffles-destroy-exe:
     main:                Main.hs
@@ -42,16 +38,3 @@ executables:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    dependencies:
-    - sniffles-destroy
-
-tests:
-  sniffles-destroy-test:
-    main:                Spec.hs
-    source-dirs:         test
-    ghc-options:
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N
-    dependencies:
-    - sniffles-destroy
